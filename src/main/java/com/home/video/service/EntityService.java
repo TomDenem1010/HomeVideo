@@ -62,6 +62,44 @@ public class EntityService {
         saveVideoDtos(videoDtos, now);
     }
 
+    public List<VideoDto> findAllActiveVideos() {
+        return videoRepository.findAllByStatus(Status.ACTIVE.toString()).stream()
+                .map(videoMapper::toDto)
+                .toList();
+    }
+
+    public List<FolderDto> findAllActiveFolders() {
+        return folderRepository.findAllByStatus(Status.ACTIVE.toString()).stream()
+                .map(folderMapper::toDto)
+                .toList();
+    }
+
+    public List<ActorDto> findAllActiveActors() {
+        return actorRepository.findAllByStatus(Status.ACTIVE.toString()).stream()
+                .map(actorMapper::toDto)
+                .toList();
+    }
+
+    public List<VideoDto> findAllActiveByFolder(final String folderPath) {
+        return videoRepository
+                .findAllByStatusAndFolderId(
+                        Status.ACTIVE.toString(),
+                        folderRepository.findByPath(folderPath).get().getId())
+                .stream()
+                .map(videoMapper::toDto)
+                .toList();
+    }
+
+    public List<VideoDto> findAllActiveByActor(final String actorName) {
+        return videoRepository
+                .findAllByStatusAndActorId(
+                        Status.ACTIVE.toString(),
+                        actorRepository.findByName(actorName).get().getId())
+                .stream()
+                .map(videoMapper::toDto)
+                .toList();
+    }
+
     private void saveFolderDtos(final List<FolderDto> folderDtos, final LocalDateTime now) {
         folderRepository.updateAllFolderStatusByStatus(Status.READING.toString(), Status.ACTIVE.toString());
         List<FolderDao> folderDaos = folderDtos.stream()
