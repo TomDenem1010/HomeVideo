@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.home.common.video.mapper.ActorMapper;
 import com.home.common.video.mapper.FolderMapper;
+import com.home.common.video.mapper.VideoMapper;
 import com.home.common.video.repository.ActorRepository;
 import com.home.common.video.repository.FolderRepository;
 import com.home.common.video.repository.VideoRepository;
@@ -24,17 +25,28 @@ public class VideoConfiguration {
     }
 
     @Bean
+    VideoMapper videoMapper(
+            final FolderRepository folderRepository,
+            final ActorRepository actorRepository,
+            final FolderMapper folderMapper,
+            final ActorMapper actorMapper) {
+        return new VideoMapper(folderRepository, actorRepository, folderMapper, actorMapper);
+    }
+
+    @Bean
     EntityService entityService(
             final FolderMapper folderMapper,
             final FolderRepository folderRepository,
             final ActorRepository actorRepository,
             final VideoRepository videoRepository,
-            final ActorMapper actorMapper) {
+            final ActorMapper actorMapper,
+            final VideoMapper videoMapper) {
         return new EntityService(
                 folderRepository,
                 actorRepository,
                 videoRepository,
                 folderMapper,
-                actorMapper);
+                actorMapper,
+                videoMapper);
     }
 }

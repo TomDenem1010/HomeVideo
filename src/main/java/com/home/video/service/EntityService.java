@@ -7,11 +7,13 @@ import java.util.Optional;
 import com.home.common.video.Status;
 import com.home.common.video.dao.ActorDao;
 import com.home.common.video.dao.FolderDao;
+import com.home.common.video.dao.VideoDao;
 import com.home.common.video.dto.ActorDto;
 import com.home.common.video.dto.FolderDto;
 import com.home.common.video.dto.VideoDto;
 import com.home.common.video.mapper.ActorMapper;
 import com.home.common.video.mapper.FolderMapper;
+import com.home.common.video.mapper.VideoMapper;
 import com.home.common.video.repository.ActorRepository;
 import com.home.common.video.repository.FolderRepository;
 import com.home.common.video.repository.VideoRepository;
@@ -25,18 +27,21 @@ public class EntityService {
     private final VideoRepository videoRepository;
     private final FolderMapper folderMapper;
     private final ActorMapper actorMapper;
+    private final VideoMapper videoMapper;
 
     public EntityService(
             final FolderRepository folderRepository,
             final ActorRepository actorRepository,
             final VideoRepository videoRepository,
             final FolderMapper folderMapper,
-            final ActorMapper actorMapper) {
+            final ActorMapper actorMapper,
+            final VideoMapper videoMapper) {
         this.folderRepository = folderRepository;
         this.actorRepository = actorRepository;
         this.videoRepository = videoRepository;
         this.folderMapper = folderMapper;
         this.actorMapper = actorMapper;
+        this.videoMapper = videoMapper;
     }
 
     @Transactional
@@ -54,6 +59,7 @@ public class EntityService {
                         .distinct()
                         .toList(),
                 now);
+        saveVideoDtos(videoDtos, now);
     }
 
     private void saveFolderDtos(final List<FolderDto> folderDtos, final LocalDateTime now) {
@@ -107,6 +113,35 @@ public class EntityService {
         });
 
         actorRepository.updateAllActorStatusAndUpdatedAtByStatus(
+                Status.INACTIVE.toString(),
+                now,
+                Status.READING.toString());
+    }
+
+    private void saveVideoDtos(final List<VideoDto> videoDtos, final LocalDateTime now) {
+        videoRepository.updateAllVideoStatusByStatus(Status.READING.toString(), Status.ACTIVE.toString());
+        List<VideoDao> videoDaos = videoDtos.stream()
+                .map(videoMapper::toEntity)
+                .toList();
+
+        videoDaos.forEach(videoDao -> {
+            Optional<VideoDao> existingVideoDao = videoRepository.findByFolderIdAndName(videoDao.getFolderId(),
+                    videoDao.getName());
+            if (existingVideoDao.isPresent() && existingVideoDao.get().getStatus() == Status.READING) {
+                videoRepository.updateVideoStatus(
+                        Status.ACTIVE.toString(),
+                        existingVideoDao.get().getId());
+            } else if (existingVideoDao.isPresent() && existingVideoDao.get().getStatus() == Status.INACTIVE) {
+                videoRepository.updateVideoStatusAndUpdatedAt(
+                        Status.ACTIVE.toString(),
+                        now,
+                        existingVideoDao.get().getId());
+            } else {
+                videoRepository.save(videoDao);
+            }
+        });
+
+        videoRepository.updateAllVideoStatusAndUpdatedAtByStatus(
                 Status.INACTIVE.toString(),
                 now,
                 Status.READING.toString());

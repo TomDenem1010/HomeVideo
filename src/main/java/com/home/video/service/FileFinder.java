@@ -47,8 +47,8 @@ public class FileFinder {
                                                         (List<String>) splittedName.get(VideoNameSplitter.ACTORS_KEY),
                                                         now),
                                                 Status.ACTIVE,
-                                                null,
-                                                null));
+                                                now,
+                                                now));
                             });
         } catch (Exception ignored) {
         }
