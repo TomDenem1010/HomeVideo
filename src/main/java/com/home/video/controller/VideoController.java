@@ -1,7 +1,5 @@
 package com.home.video.controller;
 
-import java.io.IOException;
-
 import org.springframework.core.io.support.ResourceRegion;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,10 +24,12 @@ import com.home.video.service.VideoService;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/video")
 @AllArgsConstructor
+@Slf4j(topic = "VIDEO")
 public class VideoController {
 
         private final VideoService videoService;
@@ -37,49 +37,66 @@ public class VideoController {
         @PostMapping(value = "/findVideos")
         public HomeResponse<FindVideosResponse> findVideos(
                         final @RequestBody FindVideosRequest homeRequest) {
-                return new HomeResponse<>(
+                log.debug("VideoController::findVideos in: {}", homeRequest);
+                var response = new HomeResponse<>(
                                 homeRequest.getHeader(),
                                 new FindVideosResponse(videoService.findVideos()));
+                log.debug("VideoController::findVideos out: {}", response);
+                return response;
         }
 
         @PostMapping(value = "/findFolders")
         public HomeResponse<FindFoldersResponse> findFolders(
                         final @RequestBody FindFoldersRequest homeRequest) {
-                return new HomeResponse<>(
+                log.debug("VideoController::findFolders in: {}", homeRequest);
+                var response = new HomeResponse<>(
                                 homeRequest.getHeader(),
                                 new FindFoldersResponse(videoService.findFolders()));
+                log.debug("VideoController::findFolders out: {}", response);
+                return response;
         }
 
         @PostMapping(value = "/findActors")
         public HomeResponse<FindActorsResponse> findActors(
                         final @RequestBody FindActorsRequest homeRequest) {
-                return new HomeResponse<>(
+                log.debug("VideoController::findActors in: {}", homeRequest);
+                var response = new HomeResponse<>(
                                 homeRequest.getHeader(),
                                 new FindActorsResponse(videoService.findActors()));
+                log.debug("VideoController::findActors out: {}", response);
+                return response;
         }
 
         @PostMapping(value = "/findByFolder")
         public HomeResponse<FindByFolderResponse> findByFolder(
                         final @RequestBody FindByFolderRequestWrapper homeRequest) {
-                return new HomeResponse<>(
+                log.debug("VideoController::findByFolder in: {}", homeRequest);
+                var response = new HomeResponse<>(
                                 homeRequest.getHeader(),
                                 new FindByFolderResponse(
                                                 videoService.findByFolder(homeRequest.getRequest().getFolder())));
+                log.debug("VideoController::findByFolder out: {}", response);
+                return response;
         }
 
         @PostMapping(value = "/findByActor")
         public HomeResponse<FindByActorResponse> findByActor(
                         final @RequestBody FindByActorRequestWrapper homeRequest) {
-                return new HomeResponse<>(
+                log.debug("VideoController::findByActor in: {}", homeRequest);
+                var response = new HomeResponse<>(
                                 homeRequest.getHeader(),
                                 new FindByActorResponse(videoService.findByActor(homeRequest.getRequest().getName())));
+                log.debug("VideoController::findByActor out: {}", response);
+                return response;
         }
 
         @GetMapping(value = "/stream/**")
         public ResponseEntity<ResourceRegion> streamVideo(
                         HttpServletRequest request,
-                        @RequestHeader(value = "Range", required = true) String rangeHeader)
-                        throws IOException {
-                return videoService.streamVideo(rangeHeader, request);
+                        @RequestHeader(value = "Range", required = true) String rangeHeader) {
+                log.debug("VideoController::streamVideo in: {}", rangeHeader);
+                var videoStream = videoService.streamVideo(rangeHeader, request);
+                log.debug("VideoController::streamVideo out: {}", videoStream);
+                return videoStream;
         }
 }

@@ -15,9 +15,13 @@ import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.home.video.exception.FileNotFoundException;
+
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j(topic = "VIDEO")
 public class VideoStreamService {
 
     private final FileFinder fileFinder;
@@ -57,7 +61,7 @@ public class VideoStreamService {
         try {
             return videoResource.contentLength();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("VideoStreamService::getContentLength, exception: ", e);
             return 0;
         }
     }
@@ -74,7 +78,8 @@ public class VideoStreamService {
 
     private void checkBasePath(final String path) {
         if (!path.startsWith(basePath)) {
-            throw new RuntimeException("Invalid video path: " + path);
+            log.error("VideoStreamService::checkBasePath, invalid path: {}", path);
+            throw new FileNotFoundException(path);
         }
     }
 }

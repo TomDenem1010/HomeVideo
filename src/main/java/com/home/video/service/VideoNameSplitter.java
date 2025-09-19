@@ -8,7 +8,12 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.home.video.exception.SpecialCharException;
+
+import lombok.extern.slf4j.Slf4j;
+
 @Service
+@Slf4j(topic = "VIDEO")
 public class VideoNameSplitter {
 
     public static final String NAME_KEY = "NAME_KEY";
@@ -46,7 +51,8 @@ public class VideoNameSplitter {
         }
 
         if (specialChars.size() > 0) {
-            throw new RuntimeException();
+            log.error("VideoNameSplitter::checkInvalidCharacters, specialChars: {}", specialChars);
+            throw new SpecialCharException("Invalid characters found: " + specialChars);
         }
     }
 

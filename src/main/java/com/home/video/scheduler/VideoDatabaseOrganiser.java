@@ -8,11 +8,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import com.home.common.video.dto.VideoDto;
+import com.home.video.exception.VideoDatabaseOrganiserException;
 import com.home.video.service.EntityService;
 import com.home.video.service.FileFinder;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Component
 @ConditionalOnProperty(name = "video.database.organiser.enabled", havingValue = "true", matchIfMissing = false)
+@Slf4j(topic = "VIDEO")
 public class VideoDatabaseOrganiser {
 
     private final FileFinder fileFinder;
@@ -31,11 +35,13 @@ public class VideoDatabaseOrganiser {
     @Scheduled(fixedRateString = "${video.database.organiser.rate}")
     public void run() {
         try {
+            log.info("VideoDatabaseOrganiser::run in");
             List<VideoDto> videos = fileFinder.findVideosByPath(path);
             entityService.saveVideoDtos(videos);
-            System.out.println(videos.size());
+            log.info("VideoDatabaseOrganiser::run out: {}", videos.size());
         } catch (Exception exception) {
-            throw new RuntimeException(exception);
+            log.error("VideoDatabaseOrganiser::run error: {}", exception.getMessage());
+            throw new VideoDatabaseOrganiserException("Error occurred while organizing video database", exception);
         }
     }
 }

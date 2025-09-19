@@ -17,18 +17,23 @@ import com.home.common.video.Status;
 import com.home.common.video.dto.ActorDto;
 import com.home.common.video.dto.FolderDto;
 import com.home.common.video.dto.VideoDto;
+import com.home.video.exception.FileNotFoundException;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @AllArgsConstructor
+@Slf4j(topic = "VIDEO")
 public class FileFinder {
 
     private VideoNameSplitter videoNameSplitter;
 
     public List<VideoDto> findVideosByPath(final String path) {
+        log.debug("FileFinder::findVideosByPath, path: {}", path);
         List<VideoDto> response = new ArrayList<>();
         LocalDateTime now = LocalDateTime.now();
+        log.debug("FileFinder::findVideosByPath, now: {}", now);
 
         try (Stream<Path> paths = Files.walk(Paths.get(path))) {
             paths
@@ -50,16 +55,20 @@ public class FileFinder {
                                                 now,
                                                 now));
                             });
-        } catch (Exception ignored) {
+        } catch (Exception exception) {
+            log.error("FileFinder::findVideosByPath, exception: ", exception);
         }
 
+        log.debug("FileFinder::findVideosByPath, response: {}", response);
         return response;
     }
 
     public FileSystemResource findFileSystemResourceByPath(final String path) {
+        log.debug("FileFinder::findFileSystemResourceByPath, path: {}", path);
         FileSystemResource fileSystemResource = getFileSystemResource(path);
         if (!fileSystemResource.exists()) {
-            throw new RuntimeException(path);
+            log.error("FileFinder::findFileSystemResourceByPath, file not found: {}", path);
+            throw new FileNotFoundException(path);
         }
         return fileSystemResource;
     }
@@ -68,7 +77,8 @@ public class FileFinder {
         try {
             return new FileSystemResource(new File(path).getCanonicalFile());
         } catch (Exception exception) {
-            throw new RuntimeException(exception);
+            log.error("FileFinder::getFileSystemResource, file not found: {}", path);
+            throw new FileNotFoundException(path, exception);
         }
     }
 
@@ -94,7 +104,8 @@ public class FileFinder {
 
         try {
             size = String.format("%.2f GB", Files.size(path) / (1024.0 * 1024.0 * 1024.0));
-        } catch (Exception ignored) {
+        } catch (Exception exception) {
+            log.error("FileFinder::getSize, exception: ", exception);
         }
 
         return size;
