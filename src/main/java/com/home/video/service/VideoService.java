@@ -2,12 +2,15 @@ package com.home.video.service;
 
 import java.util.List;
 
+import org.springframework.core.io.support.ResourceRegion;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.home.common.video.dto.ActorDto;
 import com.home.common.video.dto.FolderDto;
 import com.home.common.video.dto.VideoDto;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -15,6 +18,7 @@ import lombok.AllArgsConstructor;
 public class VideoService {
 
     private final EntityService entityService;
+    private final VideoStreamService videoStreamService;
 
     public List<VideoDto> findVideos() {
         return entityService.findAllActiveVideos();
@@ -34,5 +38,9 @@ public class VideoService {
 
     public List<VideoDto> findByActor(final String actorName) {
         return entityService.findAllActiveByActor(actorName);
+    }
+
+    public ResponseEntity<ResourceRegion> streamVideo(final String rangeHeader, final HttpServletRequest request) {
+        return videoStreamService.streamVideo(rangeHeader, request);
     }
 }
