@@ -31,8 +31,8 @@ public class VideoNameSplitter {
 
     public Map<String, Object> split(final String name) {
         String[] splitByActorsAndName = name.split(actorAndNameDelimiter);
-        checkInvalidCharacters(splitByActorsAndName[0]);
-        checkInvalidCharacters(splitByActorsAndName[1]);
+        checkInvalidCharacters(splitByActorsAndName[0], name);
+        checkInvalidCharacters(splitByActorsAndName[1], name);
         return Map.of(
                 NAME_KEY, splitByActorsAndName[1].trim(),
                 ACTORS_KEY, Arrays.stream(splitByActorsAndName[0].split(actorsDelimiter))
@@ -41,7 +41,7 @@ public class VideoNameSplitter {
 
     }
 
-    private void checkInvalidCharacters(final String name) {
+    private void checkInvalidCharacters(final String name, final String fileName) {
         Set<Character> specialChars = new HashSet<>();
 
         for (char ch : getClearInputCharacters(name)) {
@@ -51,7 +51,8 @@ public class VideoNameSplitter {
         }
 
         if (specialChars.size() > 0) {
-            log.error("VideoNameSplitter::checkInvalidCharacters, specialChars: {}", specialChars);
+            log.error("VideoNameSplitter::checkInvalidCharacters, filename: {}, specialChars: {}", fileName,
+                    specialChars);
             throw new SpecialCharException("Invalid characters found: " + specialChars);
         }
     }

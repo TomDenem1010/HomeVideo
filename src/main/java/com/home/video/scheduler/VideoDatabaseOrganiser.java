@@ -1,6 +1,7 @@
 package com.home.video.scheduler;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -37,7 +38,9 @@ public class VideoDatabaseOrganiser {
         try {
             log.info("VideoDatabaseOrganiser::run in");
             List<VideoDto> videos = fileFinder.findVideosByPath(path);
-            entityService.saveVideoDtos(videos);
+            if (Objects.nonNull(videos) && !videos.isEmpty()) {
+                entityService.saveVideoDtos(videos);
+            }
             log.info("VideoDatabaseOrganiser::run out: {}", videos.size());
         } catch (Exception exception) {
             log.error("VideoDatabaseOrganiser::run error: {}", exception.getMessage());
