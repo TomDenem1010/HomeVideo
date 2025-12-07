@@ -67,11 +67,12 @@ public class VideoStreamService {
     }
 
     private String getPathToStream(final HttpServletRequest request) {
-        String path = URLDecoder.decode(
+        String path = URLDecoder.decode(URLDecoder.decode(
                 request
                         .getRequestURI()
                         .substring(request.getRequestURI().indexOf("/stream/") + "/stream/".length()),
-                StandardCharsets.UTF_8);
+                StandardCharsets.UTF_8),
+                StandardCharsets.UTF_8).replace("%20", " ");
         checkBasePath(path);
         return path;
     }

@@ -47,6 +47,7 @@ public class FileFinder {
                                                 null,
                                                 getFolderDto(actualPath, now),
                                                 splittedName.get(VideoNameSplitter.NAME_KEY).toString(),
+                                                actualPath.toString().replace("\\", "/"),
                                                 getSize(actualPath),
                                                 getActorDtos(
                                                         (List<String>) splittedName.get(VideoNameSplitter.ACTORS_KEY),
