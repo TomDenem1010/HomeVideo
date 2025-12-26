@@ -5,6 +5,8 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -33,6 +35,13 @@ public class VideoDatabaseOrganiser {
         this.path = path;
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "videos", allEntries = true),
+            @CacheEvict(value = "folders", allEntries = true),
+            @CacheEvict(value = "actors", allEntries = true),
+            @CacheEvict(value = "videosByFolder", allEntries = true),
+            @CacheEvict(value = "videosByActor", allEntries = true)
+    })
     @Scheduled(fixedRateString = "${video.database.organiser.rate}")
     public void run() {
         try {
