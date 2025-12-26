@@ -9,17 +9,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableScheduling
-@EnableJpaRepositories(basePackages = {
-		"com.home.common.video"
-})
+@EnableJpaRepositories(basePackages = {"com.home.common.video"})
 @EnableCaching
-@EntityScan(basePackages = {
-		"com.home.common.video.dao"
-})
+@EntityScan(basePackages = {"com.home.common.video.dao"})
 public class Application {
 
-	public static void main(String[] args) {
-		SpringApplication.run(Application.class, args);
-	}
-
+  public static void main(String[] args) {
+    SpringApplication.run(Application.class, args);
+  }
 }

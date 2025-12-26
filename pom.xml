@@ -9,23 +9,16 @@
 	</parent>
 	<groupId>com.home</groupId>
 	<artifactId>video</artifactId>
-	<version>0.0.1</version>
+	<version>1.0.0</version>
 	<name>video</name>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
 	<properties>
 		<java.version>25</java.version>
+		<maven.compiler.version>3.14.1</maven.compiler.version>
+		<home.common.version>0.0.6</home.common.version>
+		<lombok.version>1.18.42</lombok.version>
+		<ojdbc.version>23.26.0.0.0</ojdbc.version>
+		<spotless.version>3.1.0</spotless.version>
+		<google-java-format.version>1.33.0</google-java-format.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -68,19 +61,20 @@
 		<dependency>
 			<groupId>com.home</groupId>
 			<artifactId>common</artifactId>
-			<version>0.0.5</version>
+			<version>${home.common.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+			<version>${lombok.version}</version>
 			<optional>true</optional>
 		</dependency>
 
 		<dependency>
 			<groupId>com.oracle.database.jdbc</groupId>
 			<artifactId>ojdbc11</artifactId>
-			<version>23.8.0.25.04</version>
+			<version>${ojdbc.version}</version>
 		</dependency>
 	</dependencies>
 
@@ -97,14 +91,14 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.14.0</version> 
+				<version>${maven.compiler.version}</version> 
 				<configuration>
 					<release>${java.version}</release>
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
-							<version>1.18.38</version>
+							<version>${lombok.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
@@ -113,17 +107,13 @@
 			<plugin>
 				<groupId>com.diffplug.spotless</groupId>
 				<artifactId>spotless-maven-plugin</artifactId>
-				<version>2.46.1</version>
+				<version>${spotless.version}</version>
 				<configuration>
 					<java>
 						<lineEndings>UNIX</lineEndings>
 						<googleJavaFormat>
-							<version>1.27.0</version> 
+							<version>${google-java-format.version}</version> 
 						</googleJavaFormat>
-						<indent>
-							<tabs>true</tabs>
-							<spacesPerTab>2</spacesPerTab>
-						</indent>
 						<indent>
 							<spaces>true</spaces>
 							<spacesPerTab>4</spacesPerTab>

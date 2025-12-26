@@ -4,12 +4,11 @@ import com.home.common.exception.HomeException;
 
 public class SpecialCharException extends HomeException {
 
-    public SpecialCharException(String message) {
-        super(message);
-    }
+  public SpecialCharException(String message) {
+    super(message);
+  }
 
-    public SpecialCharException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
+  public SpecialCharException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

@@ -4,14 +4,13 @@ import com.home.common.exception.HomeException;
 
 public class FileNotFoundException extends HomeException {
 
-    private static final String INVALID_VIDEO_PATH = "Invalid video path: ";
+  private static final String INVALID_VIDEO_PATH = "Invalid video path: ";
 
-    public FileNotFoundException(String path) {
-        super(INVALID_VIDEO_PATH + path);
-    }
+  public FileNotFoundException(String path) {
+    super(INVALID_VIDEO_PATH + path);
+  }
 
-    public FileNotFoundException(String path, Throwable cause) {
-        super(INVALID_VIDEO_PATH + path, cause);
-    }
-
+  public FileNotFoundException(String path, Throwable cause) {
+    super(INVALID_VIDEO_PATH + path, cause);
+  }
 }
