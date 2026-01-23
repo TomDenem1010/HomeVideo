@@ -17,7 +17,7 @@
 		<home.common.version>0.0.6</home.common.version>
 		<lombok.version>1.18.42</lombok.version>
 		<ojdbc.version>23.26.0.0.0</ojdbc.version>
-		<spotless.version>3.1.0</spotless.version>
+		<spotless.version>3.2.0</spotless.version>
 		<google-java-format.version>1.33.0</google-java-format.version>
 	</properties>
 	<dependencies>
